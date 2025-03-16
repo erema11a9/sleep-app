@@ -71,7 +71,7 @@ def add_data():
         )
     except KeyError as e:
         print("KeyError:", e)
-        return jsonify({"message": "Data has not been added"}), 400
+        return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
     db.session.add(new_stat)
     db.session.commit()
     return jsonify({"message": "Data has been added"}), 201
