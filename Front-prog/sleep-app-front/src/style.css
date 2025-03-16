@@ -10,7 +10,8 @@
     color: #f8fafc; /* Цвет текста */
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    align-items: center; /* Центрируем по вертикали */
+    justify-content: center; /* Центрируем по горизонтали */
   }
   
   .container {
@@ -74,9 +75,10 @@
   }
   
   .registration-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
     width: 100%;
     background-color: #1e293b; /* Вторичный фон */
     border-radius: 16px;
@@ -84,65 +86,13 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Тень */
   }
   
-  .registration-ram {
-    position: relative;
-    background: linear-gradient(to bottom right, #8b5cf6, #3b82f6); /* Градиент */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-  }
-  
-  .registration-content {
-    text-align: center;
-    color: white;
-    max-width: 320px;
-  }
-  
-  .registration-image-title {
-    font-size: 1.75rem;
-    margin-bottom: 16px;
-  }
-  
-  .registration-image-desc {
-    font-size: 1rem;
-    opacity: 0.9;
-    line-height: 1.6;
-    margin-bottom: 24px;
-  }
-  
-  .registration-benefits {
-    margin-top: 24px;
-  }
-  
-  .benefit-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    text-align: left;
-  }
-  
-  .benefit-icon {
-    background-color: rgba(255, 255, 255, 0.2);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  
-  .benefit-text {
-    font-size: 1rem;
-  }
-  
   .registration-form-container {
     padding: 40px;
+    width: 100%;
   }
   
   .form-title {
+    color: #ebeef3;
     font-size: 1.5rem;
     margin-bottom: 8px;
   }
@@ -175,7 +125,7 @@
   }
   
   .form-input:focus {
-    outline: 2px solid #8b5cf6; /* Цвет при фокусе */
+    outline: 2px solid #544e63; /* Цвет при фокусе */
     border-color: #8b5cf6;
   }
   
@@ -244,115 +194,6 @@
     transform: translateY(-2px);
   }
   
-  .social-login {
-    margin-top: 32px;
-  }
-  
-  .social-login-title {
-    text-align: center;
-    position: relative;
-    margin-bottom: 24px;
-  }
-  
-  .social-login-title::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.1); /* Цвет линии */
-  }
-  
-  .social-login-title::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.1); /* Цвет линии */
-  }
-  
-  .social-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  
-  .social-btn {
-    padding: 12px;
-    background-color: rgba(255, 255, 255, 0.05); /* Фон кнопок */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Граница кнопок */
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .social-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Изменение фона при наведении */
-  }
-  
-  .social-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .social-text {
-    font-size: 1rem;
-  }
-  
-  .login-link {
-    margin-top: 24px;
-    text-align: center;
-    font-size: 1rem;
-    color: #94a3b8; /* Вторичный цвет текста */
-  }
-  
-  .login-link a {
-    color: #8b5cf6; /* Цвет ссылки */
-    text-decoration: none;
-  }
-  
-  .login-link a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Circles background */
-  .blur-circle {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    z-index: 0;
-    opacity: 0.6;
-    transition: all 0.5s ease-in-out;
-  }
-  
-  .blur-circle:hover {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-  
-  .circle-1 {
-    width: 300px;
-    height: 300px;
-    background-color: rgba(139, 92, 246, 0.3); /* Легкий цвет градиента */
-    bottom: -150px;
-    right: -150px;
-  }
-  
-  .circle-2 {
-    width: 200px;
-    height: 200px;
-    background-color: rgba(59, 130, 246, 0.3); /* Легкий цвет градиента */
-    top: -100px;
-    left: -100px;
-  }
-  
   /* Responsive styles */
   @media (max-width: 768px) {
     .registration-container {
@@ -360,17 +201,9 @@
       max-width: 500px;
     }
   
-    .registration-image {
-      display: none;
-    }
-  
     .btn-primary {
       width: 100%;
       font-size: 1rem;
-    }
-  
-    .social-login-title {
-      font-size: 1.125rem;
     }
   }
   

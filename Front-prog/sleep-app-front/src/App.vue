@@ -16,23 +16,6 @@
   
       <div class="main-content">
         <div class="registration-container">
-          <div class="registration-ram">
-  
-            <div class="registration-content">
-              <h2 class="registration-image-title">Улучшите качество своего сна уже сегодня</h2>
-              <p class="registration-image-desc">Присоединяйтесь к тысячам пользователей, которые уже улучшили свой сон с помощью Sleep APP</p>
-  
-              <div class="registration-benefits">
-                <div class="benefit-item" v-for="benefit in benefits" :key="benefit.text">
-                  <div class="benefit-icon">
-                    <span class="check-icon">✔</span>
-                  </div>
-                  <div class="benefit-text">{{ benefit.text }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
           <div class="registration-form-container">
             <h2 class="form-title">Создайте аккаунт</h2>
             <p class="form-subtitle">Начните путь к здоровому сну</p>
@@ -58,7 +41,6 @@
                   v-model="formData.email"
                   class="form-input"
                   placeholder="example@mail.com"
-                  :class="{'input-invalid': !isValidEmail}"
                   required
                 />
               </div>
@@ -72,7 +54,6 @@
                     v-model="formData.password"
                     class="form-input"
                     placeholder="Минимум 8 символов"
-                    :class="{'input-invalid': !isValidPassword}"
                     required
                   />
                   <button type="button" @click="togglePasswordVisibility" class="toggle-password">👁️</button>
@@ -116,26 +97,14 @@
           password: '',
           acceptTerms: false,
         },
-        benefits: [
-          { text: 'Персонализированные рекомендации для улучшения сна' },
-          { text: 'Детальная аналитика циклов сна' },
-          { text: 'Консультации со специалистами по сну' },
-        ],
       };
     },
     computed: {
-      isValidEmail() {
-        const emailPattern = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
-        return emailPattern.test(this.formData.email);
-      },
-      isValidPassword() {
-        return this.formData.password.length >= 8;
-      },
       isFormValid() {
         return (
           this.formData.fullName &&
-          this.isValidEmail &&
-          this.isValidPassword &&
+          this.formData.email &&
+          this.formData.password.length >= 8 &&
           this.formData.acceptTerms
         );
       },
