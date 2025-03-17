@@ -17,7 +17,9 @@
 1. Python 3.13
 2. NodeJS
 3. База данных PostgreSQL
-4. Concurrently  
+4. uv  
+    (`pip install uv`)
+5. Concurrently  
     (`npm i -g concurrently`)
 
 ### Шаги для запуска
