@@ -1,11 +1,13 @@
 
 <div align = center>
 
+<img src="./assets/icon.svg" width="120" height="120" alt="Icon">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="./assets/logo.svg" width="610" height="120" alt="Logo">
 
 <br>
 
-<p style="font-size: 20px;">Простое приложение для трекинга сна с интеграцией ИИ.</p>
+<p style="font-size: 20px;">Веб-приложение для трекинга сна с интеграцией ИИ.</p>
 
 ---
 
@@ -37,4 +39,4 @@
     ```console
     npm start
     ```
-5. Зайти на https://localhost:5000/
+5. Зайти на https://localhost:5173/
