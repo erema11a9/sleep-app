@@ -1,11 +1,13 @@
 from dataclasses import dataclass
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import json
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
 from dotenv import load_dotenv
-import json
 import os
 
 # Загрузить переменные среды из .env файла
@@ -17,7 +19,8 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT")
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:8080/"])  # Чтоб можно было подключиться из Vue
+app.static_folder = "../frontend/build"
+CORS(app, origins=["http://localhost:5173"])  # Чтоб можно было подключиться из Vue
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
@@ -49,45 +52,55 @@ class Users(db.Model):
     nickname: str = Column(VARCHAR(16))
     password: str = Column(VARCHAR(20))
     birth_date: str = Column(DATE)
-    age: int = Column(SMALLINT)
     gender: str = Column(CHAR(1))
     id: int = Column(INT, primary_key=True)
 
 
-# АПИ чтоб можно было в Vue получать статы сна из БД
-@app.route("/api/sleep_stats", methods=["GET"])
-def get_stats():
-    stats = SleepStats.query.all()
-    return jsonify(json.dumps(stats, default=str))
+# Получать и добавлять статы. Запихнул всё в одну функцию, не знал, что так можно.
+# Не очень нравится, но посмотрим как будет работать.
+@app.route("/api/sleep_stats", methods=["POST", "GET"])
+def handle_stats():
+    match request.method:
+        case "POST":
+            received_data = request.json
+            try:
+                new_stat = SleepStats(
+                    user_id=received_data["user_id"],
+                    age=received_data["age"],
+                    gender=received_data["gender"],
+                    sleep_quality=received_data["sleep_quality"],
+                    bedtime=received_data["bedtime"],
+                    wakeup_time=received_data["wakeup_time"],
+                    daily_steps=received_data["daily_steps"],
+                    calories_burned=received_data["calories_burned"],
+                    physical_activity=received_data["physical_activity"],
+                    dietary_habits=received_data["dietary_habits"],
+                )
+                db.session.add(new_stat)
+                db.session.commit()
+                return jsonify({"message": "Data has been added"}), 201
+            except KeyError as e:
+                print("KeyError:", e)
+                return jsonify(
+                    {"message": f"Data has not been added, KeyError: {e}"}
+                ), 400
+
+        case "GET":
+            stats = SleepStats.query.all()
+            return jsonify(json.dumps(stats, default=str))
 
 
-# Это чтоб можно было заливать статы сна в БД
-@app.route("/api/sleep_stats", methods=["POST"])
-def add_stat():
+# Логин (пока что не работает)
+@app.route("/api/login", methods=["POST"])
+def get_users():
     received_data = request.json
-    try:
-        new_stat = SleepStats(
-            user_id=received_data["user_id"],
-            age=received_data["age"],
-            gender=received_data["gender"],
-            sleep_quality=received_data["sleep_quality"],
-            bedtime=received_data["bedtime"],
-            wakeup_time=received_data["wakeup_time"],
-            daily_steps=received_data["daily_steps"],
-            calories_burned=received_data["calories_burned"],
-            physical_activity=received_data["physical_activity"],
-            dietary_habits=received_data["dietary_habits"],
-        )
-        db.session.add(new_stat)
-        db.session.commit()
-        return jsonify({"message": "Data has been added"}), 201
-    except KeyError as e:
-        print("KeyError:", e)
-        return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
+    print(received_data)
+    users = Users.query.all()
+    return jsonify(json.dumps(users, default=str))
 
 
 # Чтоб добавлять новых пользователей
-@app.route("/api/users", methods=["POST"])
+@app.route("/api/reg", methods=["POST"])
 def add_user():
     received_data = request.json
     try:
@@ -95,7 +108,6 @@ def add_user():
             nickname=received_data["nickname"],
             password=received_data["password"],
             birth_date=received_data["birth_date"],
-            age=received_data["age"],
             gender=received_data["gender"],
         )
         db.session.add(new_user)
