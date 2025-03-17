@@ -20,7 +20,7 @@
             headers: { "Content-Type": "application/json" },
         });
 
-        sleepStats = await RESPONSE.text();
+        sleepStats = await RESPONSE.json();
     }
 
     let test: string = $state("");
@@ -52,5 +52,5 @@
 <br />
 <br />
 {#if sleepStats}
-    {sleepStats}
+    <pre> {JSON.stringify(sleepStats, null, 2)} </pre>
 {/if}
