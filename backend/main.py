@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME
+from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
 from dotenv import load_dotenv
 import json
@@ -42,19 +42,28 @@ class SleepStats(db.Model):
     stat_id: int = Column(INT, primary_key=True)
 
 
-# АПИ чтоб можно было в Vue получать данные из БД
-#
-# Пока что работает просто при заходе на http://127.0.0.1:5000/api/sleep_stats,
-# потом закроем это и сделаем, чтоб только Vue мог получать данные
+@dataclass
+class Users(db.Model):
+    __tablename__ = "users"
+
+    nickname: str = Column(VARCHAR(16))
+    password: str = Column(VARCHAR(20))
+    birth_date: str = Column(DATE)
+    age: int = Column(SMALLINT)
+    gender: str = Column(CHAR(1))
+    id: int = Column(INT, primary_key=True)
+
+
+# АПИ чтоб можно было в Vue получать статы сна из БД
 @app.route("/api/sleep_stats", methods=["GET"])
-def get_data():
+def get_stats():
     stats = SleepStats.query.all()
     return jsonify(json.dumps(stats, default=str))
 
 
-# Это чтоб можно было заливать данные в БД
+# Это чтоб можно было заливать статы сна в БД
 @app.route("/api/sleep_stats", methods=["POST"])
-def add_data():
+def add_stat():
     received_data = request.json
     try:
         new_stat = SleepStats(
@@ -69,12 +78,32 @@ def add_data():
             physical_activity=received_data["physical_activity"],
             dietary_habits=received_data["dietary_habits"],
         )
+        db.session.add(new_stat)
+        db.session.commit()
+        return jsonify({"message": "Data has been added"}), 201
     except KeyError as e:
         print("KeyError:", e)
         return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
-    db.session.add(new_stat)
-    db.session.commit()
-    return jsonify({"message": "Data has been added"}), 201
+
+
+# Чтоб добавлять новых пользователей
+@app.route("/api/users", methods=["POST"])
+def add_user():
+    received_data = request.json
+    try:
+        new_user = Users(
+            nickname=received_data["nickname"],
+            password=received_data["password"],
+            birth_date=received_data["birth_date"],
+            age=received_data["age"],
+            gender=received_data["gender"],
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "Data has been added"}), 201
+    except KeyError as e:
+        print("KeyError:", e)
+        return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
 
 
 if __name__ == "__main__":
