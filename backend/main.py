@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import (
     create_access_token,
@@ -9,7 +9,10 @@ from flask_jwt_extended import (
     JWTManager,
 )
 
+from pathlib import Path
+
 from flask_sqlalchemy import SQLAlchemy
+
 from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
 from dotenv import load_dotenv
@@ -23,8 +26,10 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT")
 
-app = Flask(__name__)
-app.static_folder = "../frontend/build"
+app = Flask(
+    __name__,
+    static_folder="../frontend/build",
+)
 CORS(app, origins=["http://localhost:5173"])  # Чтоб можно было подключиться из фронта
 
 app.config["JWT_SECRET_KEY"] = "qweqweqweqwe123123"
@@ -160,7 +165,25 @@ def add_user():
         return jsonify({"message": "Data has been added"}), 201
     except KeyError as e:
         print("KeyError:", e)
-        return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
+        return jsonify({"error": f"Data has not been added, KeyError: {e}"}), 400
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    if path == "":
+        return send_from_directory(app.static_folder, "index.html")
+
+    static_path = Path(app.static_folder) / path
+    print(static_path)
+    if static_path.exists():
+        return send_from_directory(app.static_folder, path)
+
+    html_path = Path(app.static_folder) / f"{path}.html"
+    if html_path.exists():
+        return send_from_directory(app.static_folder, f"{path}.html")
+
+    return send_from_directory(app.static_folder, "404.html")
 
 
 if __name__ == "__main__":

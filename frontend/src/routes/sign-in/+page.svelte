@@ -33,9 +33,7 @@
             let data = await RESPONSE.json();
             token = data.access_token;
             localStorage.setItem("token", token);
-            setTimeout(() => {
-                goto("/app");
-            }, 1000);
+            goto("/app");
         } else {
             message = "Проверьте логин или пароль.";
         }
@@ -47,7 +45,13 @@
 <br />
 <label for="nickname">Ваш никнейм</label>
 <br />
-<input type="text" name="nickname" id="nickname" bind:value={nickname} />
+<input
+    type="text"
+    name="nickname"
+    id="nickname"
+    bind:value={nickname}
+    placeholder="Никнейм"
+/>
 <br />
 <br />
 <label for="password">Ваш пароль</label>
@@ -57,6 +61,7 @@
     name="password"
     id="password"
     bind:value={password}
+    placeholder="Пароль"
 />
 <input
     type="checkbox"
