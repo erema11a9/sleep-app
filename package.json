@@ -1,5 +1,6 @@
 {
     "scripts": {
-        "start": "concurrently \"cd backend && uv run main.py\" \"cd frontend && npm run dev\""
+        "start_dev": "concurrently \"cd backend && uv run main.py\" \"cd frontend && npm run dev\"",
+        "start_prod": "concurrently \"cd backend && uv run main.py\" \"cd frontend && npm run build\""
     }
 }

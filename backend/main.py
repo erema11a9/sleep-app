@@ -1,10 +1,18 @@
 from dataclasses import dataclass
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
-import json
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+    JWTManager,
+)
+
+from pathlib import Path
 
 from flask_sqlalchemy import SQLAlchemy
+
 from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
 from dotenv import load_dotenv
@@ -18,9 +26,15 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT")
 
-app = Flask(__name__)
-app.static_folder = "../frontend/build"
-CORS(app, origins=["http://localhost:5173"])  # Чтоб можно было подключиться из Vue
+app = Flask(
+    __name__,
+    static_folder="../frontend/build",
+)
+CORS(app, origins=["http://localhost:5173"])  # Чтоб можно было подключиться из фронта
+
+app.config["JWT_SECRET_KEY"] = "qweqweqweqwe123123"
+jwt = JWTManager(app)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
@@ -30,6 +44,8 @@ db = SQLAlchemy(app)
 
 @dataclass
 class SleepStats(db.Model):
+    """Модель таблицы со статами"""
+
     __tablename__ = "sleep_stats"
 
     user_id: int = Column(INT)
@@ -44,9 +60,26 @@ class SleepStats(db.Model):
     dietary_habits: str = Column(VARCHAR(10))
     stat_id: int = Column(INT, primary_key=True)
 
+    def serialise(self):
+        return {
+            "user_id": self.user_id,
+            "age": self.age,
+            "gender": self.gender,
+            "sleep_quality": self.sleep_quality,
+            "bedtime": str(self.bedtime),
+            "wakeup_time": str(self.wakeup_time),
+            "daily_steps": self.daily_steps,
+            "calories_burned": self.calories_burned,
+            "physical_activity": self.physical_activity,
+            "dietary_habits": self.dietary_habits,
+            "stat_id": self.stat_id,
+        }
+
 
 @dataclass
 class Users(db.Model):
+    """Модель таблицы пользователей"""
+
     __tablename__ = "users"
 
     nickname: str = Column(VARCHAR(16))
@@ -54,6 +87,15 @@ class Users(db.Model):
     birth_date: str = Column(DATE)
     gender: str = Column(CHAR(1))
     id: int = Column(INT, primary_key=True)
+
+    def serialise(self):
+        return {
+            "nickname": self.nickname,
+            "password": self.password,
+            "birth_date": self.birth_date,
+            "gender": self.gender,
+            "id": self.id,
+        }
 
 
 # Получать и добавлять статы. Запихнул всё в одну функцию, не знал, что так можно.
@@ -87,16 +129,24 @@ def handle_stats():
 
         case "GET":
             stats = SleepStats.query.all()
-            return jsonify(json.dumps(stats, default=str))
+            return jsonify([stat.serialise() for stat in stats])
 
 
-# Логин (пока что не работает)
+# Логин (теперь работает)
 @app.route("/api/login", methods=["POST"])
 def get_users():
     received_data = request.json
     print(received_data)
-    users = Users.query.all()
-    return jsonify(json.dumps(users, default=str))
+    nickname = received_data.get("nickname")
+    password = received_data.get("password")
+    user = Users.query.filter(Users.nickname == nickname).first()
+
+    if user and user.password == password:
+        print("logged in successfully")
+        access_token = create_access_token(identity=nickname)
+        return jsonify({"access_token": access_token}), 200
+
+    return jsonify({"message": "Invalid credentials"}), 401
 
 
 # Чтоб добавлять новых пользователей
@@ -115,7 +165,25 @@ def add_user():
         return jsonify({"message": "Data has been added"}), 201
     except KeyError as e:
         print("KeyError:", e)
-        return jsonify({"message": f"Data has not been added, KeyError: {e}"}), 400
+        return jsonify({"error": f"Data has not been added, KeyError: {e}"}), 400
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    if path == "":
+        return send_from_directory(app.static_folder, "index.html")
+
+    static_path = Path(app.static_folder) / path
+    print(static_path)
+    if static_path.exists():
+        return send_from_directory(app.static_folder, path)
+
+    html_path = Path(app.static_folder) / f"{path}.html"
+    if html_path.exists():
+        return send_from_directory(app.static_folder, f"{path}.html")
+
+    return send_from_directory(app.static_folder, "404.html")
 
 
 if __name__ == "__main__":

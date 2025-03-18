@@ -1,5 +1,13 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { onMount } from "svelte";
+
+    let token;
+    onMount(() => {
+        token = localStorage.getItem("token") || "";
+    });
+
+    let message = $state();
 
     let nickname: string = $state("");
 
@@ -15,13 +23,20 @@
             password,
         };
 
-        await fetch("http://localhost:5000/api/login", {
+        const RESPONSE = await fetch("http://localhost:5000/api/login", {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" },
         });
 
-        goto("/app");
+        if (RESPONSE.ok) {
+            let data = await RESPONSE.json();
+            token = data.access_token;
+            localStorage.setItem("token", token);
+            goto("/app");
+        } else {
+            message = "Проверьте логин или пароль.";
+        }
     }
 </script>
 
@@ -30,7 +45,13 @@
 <br />
 <label for="nickname">Ваш никнейм</label>
 <br />
-<input type="text" name="nickname" id="nickname" bind:value={nickname} />
+<input
+    type="text"
+    name="nickname"
+    id="nickname"
+    bind:value={nickname}
+    placeholder="Никнейм"
+/>
 <br />
 <br />
 <label for="password">Ваш пароль</label>
@@ -40,6 +61,7 @@
     name="password"
     id="password"
     bind:value={password}
+    placeholder="Пароль"
 />
 <input
     type="checkbox"
@@ -49,7 +71,9 @@
 />
 <br />
 <br />
-
+{#if message}
+    <p>{message}</p>
+{/if}
 <button onclick={login}> Войти </button>
 <br />
 <p>Нет аккаунта? <a href="../sign-up">Зарегистрироваться</a></p>
