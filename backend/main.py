@@ -9,14 +9,12 @@ from flask_jwt_extended import (
     JWTManager,
 )
 
-from pathlib import Path
-
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 
 # Загрузить переменные среды из .env файла
 load_dotenv()
@@ -40,6 +38,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
+with app.app_context():
+    db.create_all()
 
 
 @dataclass
@@ -166,6 +166,13 @@ def add_user():
     except KeyError as e:
         print("KeyError:", e)
         return jsonify({"error": f"Data has not been added, KeyError: {e}"}), 400
+
+
+@app.route("/app")
+@jwt_required
+def main_app_page():
+    print(get_jwt_identity())
+    return send_from_directory(app.static_folder, "app.html")
 
 
 @app.route("/", defaults={"path": ""})
