@@ -12,11 +12,7 @@ export default {
 </script>
 
 <style>
- html { 
-  background: linear-gradient(100deg, #0F172A, #0c255f);
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+html {
+  all: unset;
 }
 </style>

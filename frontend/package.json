@@ -2,7 +2,7 @@
   "name": "sleep-app-front",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -15,6 +15,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "vite": "^6.2.1",
+    "vite-plugin-prerender": "^1.0.8",
     "vite-plugin-vue-devtools": "^7.7.2"
   }
 }
