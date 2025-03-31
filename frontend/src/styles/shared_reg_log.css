@@ -70,7 +70,7 @@ a {
     margin-top: 2vh;
 }
 
-.field > * {
+.field>* {
     margin-top: 1vmin;
 }
 
@@ -95,9 +95,9 @@ img {
     margin-top: 2vh;
     border-radius: 1vmax;
 }
+
 .error-message {
     padding: 0 2vw;
     color: var(--error);
     font-size: .8em;
 }
-

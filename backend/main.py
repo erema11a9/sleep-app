@@ -38,8 +38,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
 
 
 @dataclass
@@ -194,4 +192,6 @@ def serve(path):
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
