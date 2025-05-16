@@ -50,7 +50,7 @@ const navigate = (path) => {
 
         <div class="footer">
           <div class="copyright">
-            <p>© 2025 Студенты 2ИТб-2: Дудин М., Еремин Д., Филиппов Д., Шевченко А.</p>
+            <p>© Студенты 2ИТб-2: Дудин М., Еремин Д., Филиппов Д., Шевченко А., 2025</p>
           </div>
           <div class="links">
             <a href="https://github.com/erema11a9/sleep-app">
