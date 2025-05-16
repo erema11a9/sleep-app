@@ -1,154 +1,177 @@
 <template>
   <div class="viewport">
-    <div class="main-content">
-      <div class="registration-container">
-        <div class="registration-form-container">
-          <h2 class="form-title">Создайте аккаунт</h2>
-          <p class="form-subtitle">Начните путь к здоровому сну</p>
+    <div class="login-window">
+      <div class="login-contents">
+        <router-link to="/">
+          <img :src="logo" alt="Logo" />
+        </router-link>
 
-          <form @submit.prevent="submitForm">
-            <!-- Никнейм -->
-            <div class="form-group">
-              <label for="nickname" class="form-label">Никнейм</label>
-              <input type="text" id="nickname" v-model="formData.nickname" @blur="validateField('nickname')"
-                :class="{ 'error': errors.nickname }" class="form-input" placeholder="Введите ваш ник" maxlength="16"
-                required />
-            </div>
-
-            <!-- Дата рождения -->
-            <div class="form-group">
-              <label for="birthdate" class="form-label">Дата рождения</label>
-              <input type="date" id="birthdate" v-model="formData.birthdate" @blur="validateField('birthdate')"
-                :class="{ 'error': errors.birthdate }" class="form-input" required />
-            </div>
-
-            <!-- Пол -->
-            <div class="form-group">
-              <label class="form-label">Пол</label>
-              <div class="gender-options">
-                <label>
-                  <input type="radio" name="gender" value="male" v-model="formData.gender" required /> Мужской
-                </label>
-                <label>
-                  <input type="radio" name="gender" value="female" v-model="formData.gender" required /> Женский
-                </label>
-              </div>
-            </div>
-
-            <!-- Пароль -->
-            <div class="form-group">
-              <label for="password" class="form-label">Пароль</label>
-              <div class="password-input-container">
-                <input type="password" id="password" v-model="formData.password" @blur="validateField('password')"
-                  :class="{ 'error': errors.password }" class="form-input" placeholder="Минимум 8 символов"
-                  maxlength="16" required />
-                <button type="button" @click="togglePasswordVisibility" class="toggle-password">👁️</button>
-              </div>
-            </div>
-
-            <!-- Кнопка регистрации -->
-            <button type="submit" class="btn" :class="{ 'btn-primary': isFormValid, 'btn-disabled': !isFormValid }"
-              :disabled="!isFormValid">
-              Создать аккаунт
-            </button>
-
-            <!-- Сообщение об ошибке -->
-            <p v-if="formHasErrors" class="error-message">
-              Пожалуйста, заполните все поля корректно!
-            </p>
-          </form>
+        <div v-if="errorMessage" class="error-container">
+          <p class="error-message">{{ errorMessage }}</p>
         </div>
+
+        <div class="field">
+          <label for="reg-nickname">Ваш никнейм</label>
+          <input type="text" name="reg-nickname" id="reg-nickname" required v-model="nickname" placeholder="Никнейм" />
+        </div>
+
+        <div class="field">
+          <label for="birthdate">Дата рождения</label>
+          <input type="date" name="birthdate" id="birthdate" required :max="today" v-model="dateString" />
+        </div>
+
+        <div class="field">
+          <label for="gender">Пол</label>
+          <div class="radio-group">
+            <label v-for="gender in genders" :key="gender.char">
+              <input type="radio" name="gender" :value="gender.char" v-model="selectedGender" required />
+              {{ gender.text }}
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="reg-password">Ваш пароль</label>
+          <input :type="passFieldType" name="reg-password" id="reg-password" required minlength="8" maxlength="20"
+            v-model="password" placeholder="Пароль" />
+        </div>
+
+        <p>
+          <label class="checkbox">
+            <input type="checkbox" name="showPassword" id="showPassword" @click="togglePasswordVisibility" />Показать
+            пароль
+          </label>
+        </p>
+
+        <button @click="register"> Регистрация </button>
+
+        <p class="no-account">
+          Уже есть аккаунт?
+          <router-link to="../sign-in" class="no-account">Войти</router-link>
+        </p>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      formData: {
-        nickname: '',
-        birthdate: '',
-        gender: '',
-        password: '',
-      },
-      errors: {
-        nickname: false,
-        birthdate: false,
-        password: false,
-      },
-      attemptedSubmit: false,
-    };
-  },
-  computed: {
-    isFormValid() {
-      return (
-        this.formData.nickname.length > 0 &&
-        this.isValidAge &&
-        this.formData.gender.length > 0 &&
-        this.formData.password.length >= 8
-      );
-    },
-    formHasErrors() {
-      return Object.values(this.errors).some(error => error);
-    },
-    isValidAge() {
-      if (!this.formData.birthdate) return false;
-      const birthYear = new Date(this.formData.birthdate).getFullYear();
-      const currentYear = new Date().getFullYear();
-      const age = currentYear - birthYear;
-      return age >= 12 && age <= 112;
+<script setup lang="ts">
+import logo from '@/assets/logo_text.svg';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
+
+function isAlphaNumeric(str: string) {
+  var code, i, len;
+
+  for (i = 0, len = str.length; i < len; i++) {
+    code = str.charCodeAt(i);
+    if (
+      !(code > 47 && code < 58) &&
+      !(code > 64 && code < 91) &&
+      !(code > 96 && code < 123)
+    ) {
+      return false;
     }
+  }
+  return true;
+}
+
+const nickname = ref('');
+
+const passFieldType = ref<'password' | 'text'>('password');
+function togglePasswordVisibility() {
+  passFieldType.value = passFieldType.value === 'password' ? 'text' : 'password';
+}
+const password = ref('');
+
+const today = new Date().toISOString().substring(0, 10);
+const dateString = ref(today);
+
+const genders = ref([
+  {
+    char: 'm',
+    text: 'Мужчина',
   },
-  methods: {
-    validateField(field) {
-      if (field === 'password') {
-        this.errors.password = this.formData.password.length < 8;
-      } else if (field === 'birthdate') {
-        this.errors.birthdate = !this.isValidAge;
-      } else {
-        this.errors[field] = this.formData[field].trim() === '';
-      }
-    },
-    validateAllFields() {
-      this.errors.nickname = this.formData.nickname.trim() === '';
-      this.errors.birthdate = !this.isValidAge;
-      this.errors.password = this.formData.password.length < 8;
-    },
-    submitForm() {
-      this.attemptedSubmit = true;
-      this.validateAllFields();
+  {
+    char: 'f',
+    text: 'Женщина',
+  },
+]);
+const selectedGender = ref('');
 
-      if (!this.isFormValid) {
-        console.log("Ошибка! Заполните все поля корректно.");
-        return;
-      }
+const errorMessage = ref<string | null>(null);
 
-      console.log("Регистрация успешна!", this.formData);
-    },
-    togglePasswordVisibility() {
-      const passwordField = document.getElementById('password');
-      passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-    },
-    async sendDataToBackend() {
-      const RESPONSE = await fetch("http://localhost:5000/api/users", {
-        method: "POST",
-        body: {
+function check(): boolean {
+  errorMessage.value = null;
 
-        }
-      })
+  if (!isAlphaNumeric(nickname.value)) {
+    errorMessage.value = 'В никнейме могут быть только латинские буквы и цифры';
+  } else if (nickname.value.length < 4) {
+    errorMessage.value = 'Никнейм должен быть длиной 4 символа или больше';
+  } else if (
+    new Date(dateString.value).getFullYear() >
+    new Date().getFullYear() - 2
+  ) {
+    errorMessage.value = 'Недействительная дата рождения';
+  } else if (selectedGender.value === '') {
+    errorMessage.value = 'Выберите пол';
+  } else if (password.value.length < 8) {
+    errorMessage.value = 'Пароль должен быть длиной 8 символов или больше';
+  }
 
-      if (RESPONSE.ok) {
-        // ...
-      }
+  if (errorMessage.value) {
+    return false;
+  }
+
+  return true;
+}
+
+async function register() {
+  if (!check()) {
+    return;
+  }
+
+  const stuff = {
+    nickname: nickname.value,
+    password: password.value,
+    birth_date: dateString.value,
+    gender: selectedGender.value,
+  };
+
+  try {
+    const RESPONSE = await fetch('http://localhost:5000/api/reg', {
+      method: 'POST',
+      body: JSON.stringify(stuff),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (RESPONSE.ok) {
+      router.push('/app');
+    } else {
+      const errorData = await RESPONSE.json();
+      errorMessage.value = errorData.message || 'Ошибка регистрации';
     }
-  },
-
-};
+  } catch (error: any) {
+    errorMessage.value = 'Произошла ошибка при регистрации';
+    console.error('Ошибка регистрации:', error);
+  }
+}
 </script>
 
 <style scoped>
-@import '@/styles/shared_global.css';
-@import '@/styles/SignIn-style.css';
+@import '@/styles/shared_reg_log.css';
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 </style>

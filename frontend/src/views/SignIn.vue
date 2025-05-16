@@ -69,7 +69,7 @@ async function login() {
             const data = await response.json();
             token.value = data.access_token;
             localStorage.setItem("token", token.value);
-            router.push("/app");
+            router.push("/account");
         } else {
             errorMessage.value = "Проверьте логин или пароль.";
         }
