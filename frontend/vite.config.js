@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [vue(),
   vitePrerender({
     staticDir: path.join(__dirname, 'build'),
-    routes: ['/', '/about-us', 'sign-in']
+    routes: ['/', '/about-us', '/sign-in', '/sign-up', '/account']
   })
   ],
   resolve: {

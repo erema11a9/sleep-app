@@ -148,7 +148,7 @@ async function register() {
     });
 
     if (RESPONSE.ok) {
-      router.push('/app');
+      router.push('/account');
     } else {
       const errorData = await RESPONSE.json();
       errorMessage.value = errorData.message || 'Ошибка регистрации';
