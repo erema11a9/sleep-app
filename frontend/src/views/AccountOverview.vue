@@ -91,12 +91,14 @@
                     <div class="chat-input">
                         <input v-model="chatInput" type="text" placeholder="Задайте вопрос ИИ..."
                             @keyup.enter="sendMessage" />
-                        <button @click="sendMessage"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        <button @click="sendMessage">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM13 10H16L12 14L8 10H11V7H13V10Z"
                                     fill="white" />
-                            </svg></button>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -277,35 +279,37 @@ const sendMessage = async () => {
     font-family: 'Comfortaa', cursive;
 }
 
-body {
-    background-color: #0f172a;
-    color: #f8fafc;
-    min-height: 100vh;
-}
-
 .viewport {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
+    background: #0f172a;
+    overflow-x: hidden;
 }
 
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 24px;
+    padding: 1rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 0.75rem;
+    text-decoration: none;
+    margin-left: 2rem;
 }
 
 .logo-img {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 .logo-text {
@@ -319,13 +323,14 @@ header {
 
 nav {
     display: flex;
-    gap: 32px;
+    gap: 1.5rem;
+    align-items: center;
 }
 
 nav a {
     color: #94a3b8;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 500;
     transition: color 0.2s;
 }
@@ -341,77 +346,76 @@ nav a.active {
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 12px;
-    cursor: pointer;
+    gap: 0.75rem;
+    margin-right: 2rem;
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    background-color: #8b5cf6;
+    background: #8b5cf6;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 1rem;
+    color: #fff;
 }
 
 .main-content {
     display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 32px;
-    margin: 40px 0;
-    padding: 0;
-    width: 100%;
+    grid-template-columns: 1fr minmax(18rem, 22rem);
+    gap: 2rem;
+    margin: 2rem auto;
     flex-grow: 1;
+    max-width: 1200px;
+    width: 100%;
 }
 
 .dashboard {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    padding: 0 24px;
+    gap: 2rem;
+    width: 100%;
 }
 
 .section-title {
-    margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 700;
+    margin-bottom: 1rem;
+    color: #f8fafc;
 }
 
 .stats-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1.5rem;
 }
 
 .stat-card {
     background: linear-gradient(45deg, #1e293b, #1e293b);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 1rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .stat-title {
     color: #94a3b8;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .stat-value {
-    font-size: 32px;
+    font-size: 2rem;
     font-weight: 700;
     color: #f8fafc;
 }
 
 .stat-trend {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .trend-up {
@@ -424,10 +428,9 @@ nav a.active {
 
 .chart-container {
     background: linear-gradient(45deg, #1e293b, #1e293b);
-    border-radius: 16px;
-    padding: 24px;
-    height: 300px;
-    position: relative;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    height: 18rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -435,102 +438,154 @@ nav a.active {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .chart-title {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 700;
+    color: #f8fafc;
 }
 
 .chart-legend {
     display: flex;
-    gap: 20px;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 0.5rem;
+    font-size: 0.9rem;
     color: #94a3b8;
 }
 
 .legend-color {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 0.25rem;
+}
+
+.recommendations {
+    background: linear-gradient(45deg, #1e293b, #1e293b);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommendation-item:last-child {
+    border-bottom: none;
+}
+
+.recommendation-icon {
+    background: rgba(139, 92, 246, 0.2);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b5cf6;
+    font-size: 1.25rem;
+}
+
+.recommendation-text {
+    flex: 1;
+}
+
+.recommendation-title {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.375rem;
+    color: #f8fafc;
+}
+
+.recommendation-desc {
+    font-size: 1rem;
+    color: #94a3b8;
 }
 
 .sidebar {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    padding: 0 24px;
+    gap: 2rem;
+    width: 100%;
 }
 
 .profile-card {
     background: linear-gradient(45deg, #1e293b, #1e293b);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 1rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .profile-img {
-    width: 100px;
-    height: 100px;
+    width: 25%;
+    aspect-ratio: 1/1;
     border-radius: 50%;
     background: linear-gradient(to right bottom, #8b5cf6, #3b82f6);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2.5rem;
     font-weight: 700;
+    color: #fff;
 }
 
 .profile-name {
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 700;
+    color: #f8fafc;
 }
 
 .profile-streak {
     background: rgba(139, 92, 246, 0.2);
-    padding: 8px 16px;
-    border-radius: 24px;
-    font-size: 16px;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    font-size: 1rem;
     color: #8b5cf6;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .chat-container {
     background: linear-gradient(45deg, #1e293b, #1e293b);
-    border-radius: 16px;
+    border-radius: 1rem;
     display: flex;
     flex-direction: column;
-    height: 400px;
+    flex-grow: 1;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-height: 25rem;
 }
 
 .chat-header {
-    padding: 20px;
+    padding: 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-weight: 700;
-    font-size: 20px;
+    font-size: 1.25rem;
+    color: #f8fafc;
 }
 
 .chat-messages {
     flex: 1;
-    padding: 20px;
+    padding: 1.25rem;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .message {
@@ -546,50 +601,52 @@ nav a.active {
 }
 
 .message-bubble {
-    padding: 16px 20px;
-    border-radius: 20px;
-    font-size: 16px;
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+    font-size: 1rem;
 }
 
 .message-incoming .message-bubble {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
 }
 
 .message-outgoing .message-bubble {
     background: linear-gradient(to right, #8b5cf6, #3b82f6);
+    color: #fff;
 }
 
 .message-time {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #94a3b8;
-    margin-top: 6px;
+    margin-top: 0.375rem;
     display: flex;
     justify-content: flex-end;
 }
 
 .chat-input {
     display: flex;
-    padding: 16px;
-    gap: 12px;
+    padding: 1rem;
+    gap: 0.75rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chat-input input {
     flex: 1;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    padding: 12px 20px;
-    border-radius: 24px;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1.5rem;
     color: #f8fafc;
     outline: none;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .chat-input button {
     background: linear-gradient(to right, #8b5cf6, #3b82f6);
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -601,83 +658,230 @@ nav a.active {
     opacity: 0.9;
 }
 
-.recommendations {
-    background: linear-gradient(45deg, #1e293b, #1e293b);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.recommendation-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.recommendation-item:last-child {
-    border-bottom: none;
-}
-
-.recommendation-icon {
-    background-color: rgba(139, 92, 246, 0.2);
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #8b5cf6;
-    font-size: 20px;
-}
-
-.recommendation-text {
-    flex: 1;
-}
-
-.recommendation-title {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 6px;
-}
-
-.recommendation-desc {
-    font-size: 16px;
-    color: #94a3b8;
-}
-
 footer {
     display: flex;
     justify-content: space-between;
-    padding: 16px 24px;
+    padding: 1rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
 }
 
-.copyright,
-.links {
-    font-size: 16px;
+.copyright {
+    font-size: 1rem;
     color: #94a3b8;
+    margin-left: 2rem;
+}
+
+.links {
+    font-size: 1rem;
+    color: #94a3b8;
+    margin-right: 2rem;
 }
 
 .links a img {
-    width: 28px;
-    height: 28px;
-    margin-left: 16px;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-left: 1rem;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        padding: 0;
+    }
 }
 
 @media (max-width: 768px) {
+    header {
+        padding: 0.75rem 0;
+    }
+
+    .logo {
+        margin-left: 1rem;
+    }
+
+    .logo-img {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .logo-text {
+        font-size: 1.25rem;
+    }
+
+    nav {
+        gap: 1rem;
+    }
+
+    nav a {
+        font-size: 0.9rem;
+    }
+
+    .user-profile {
+        margin-right: 1rem;
+    }
+
+    .user-avatar {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.9rem;
+    }
+
     .main-content {
-        grid-template-columns: 1fr;
+        margin: 1rem 0;
+        padding: 0;
     }
 
     .stats-cards {
         grid-template-columns: 1fr;
     }
 
-    .dashboard,
-    .sidebar {
-        padding: 0 16px;
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        height: 15rem;
+    }
+
+    .chart-title {
+        font-size: 1.1rem;
+    }
+
+    .legend-item {
+        font-size: 0.8rem;
+    }
+
+    .profile-img {
+        width: 20%;
+        font-size: 2rem;
+    }
+
+    .profile-name {
+        font-size: 1.2rem;
+    }
+
+    .profile-streak {
+        font-size: 0.9rem;
+    }
+
+    .chat-container {
+        max-height: 20rem;
+    }
+
+    .chat-header {
+        font-size: 1.1rem;
+    }
+
+    .copyright {
+        margin-left: 1rem;
+    }
+
+    .links {
+        margin-right: 1rem;
+    }
+
+    footer {
+        padding: 0.75rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        margin-left: 0.5rem;
+    }
+
+    .logo-text {
+        font-size: 1rem;
+    }
+
+    nav a {
+        font-size: 0.8rem;
+    }
+
+    .user-profile {
+        margin-right: 0.5rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+
+    .stat-card {
+        padding: 0.75rem;
+    }
+
+    .stat-title {
+        font-size: 0.9rem;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
+    }
+
+    .stat-trend {
+        font-size: 0.9rem;
+    }
+
+    .recommendation-title {
+        font-size: 1rem;
+    }
+
+    .recommendation-desc {
+        font-size: 0.9rem;
+    }
+
+    .recommendation-icon {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+    }
+
+    .chat-input input {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .chat-input button {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .chat-input button svg {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .copyright {
+        margin-left: 0.5rem;
+    }
+
+    .links {
+        margin-right: 0.5rem;
+    }
+
+    .copyright,
+    .links {
+        font-size: 0.9rem;
+    }
+
+    .links a img {
+        width: 1.5rem;
+        height: 1.5rem;
     }
 }
 </style>
