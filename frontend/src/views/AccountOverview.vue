@@ -128,6 +128,8 @@ import logoText from '@/assets/logo_text.svg';
 import github from '@/assets/github.svg';
 import tg from '@/assets/tg.svg';
 
+
+
 // Определение интерфейсов для типизации
 interface User {
     nickname: string;
@@ -191,6 +193,17 @@ const chatMessages = ref<ChatMessage[]>([]);
 const chatInput = ref<string>('');
 
 onMounted(async () => {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('http://localhost:5000/protected', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+        router.push("/sign-in")
+    }
+
     try {
         const userResponse = await fetch('http://localhost:5000/api/user', { headers: { 'Content-Type': 'application/json' } });
         if (userResponse.ok) user.value = await userResponse.json() as User;

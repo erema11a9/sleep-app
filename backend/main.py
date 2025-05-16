@@ -12,6 +12,7 @@ from flask_jwt_extended import (
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, INT, SMALLINT, CHAR, VARCHAR, TIME, DATE
 
+import requests
 from dotenv import load_dotenv
 import os
 from pathlib import Path
@@ -38,6 +39,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
+
+AI_PROMPT = """
+Ты выступаешь в роли врача сомнолога и должен отвечать на запросы пользователя ТОЛЬКО по вопросам сна. На любые другие вопросы, не касающиеся сна, ты должен отвечать пользователю, что ты только отвечаешь на вопросы по сну.
+Твои ответы должны быть достаточно краткими, но содержательными.
+После слова user будет запрос пользователя.
+user: 
+"""
 
 
 @dataclass
@@ -166,11 +174,18 @@ def add_user():
         return jsonify({"error": f"Data has not been added, KeyError: {e}"}), 400
 
 
-@app.route("/app")
-@jwt_required
-def main_app_page():
-    print(get_jwt_identity())
-    return send_from_directory(app.static_folder, "app.html")
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    received_data = request.json
+    payload = {"model": "gemma3:1b", "prompt": AI_PROMPT + received_data['message'], "stream": False}
+    response = requests.post("http://localhost:11434/api/generate", json=payload)
+    return jsonify(response.json()), 200
+
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 
 @app.route("/", defaults={"path": ""})
@@ -179,14 +194,14 @@ def serve(path):
     if path == "":
         return send_from_directory(app.static_folder, "index.html")
 
+    html_path = Path(app.static_folder) / f"{path}/index.html"
+    print(f"{path}/index.html")
+    if html_path.exists():
+        return send_from_directory(app.static_folder, f"{path}/index.html")
+
     static_path = Path(app.static_folder) / path
-    print(static_path)
     if static_path.exists():
         return send_from_directory(app.static_folder, path)
-
-    html_path = Path(app.static_folder) / f"{path}.html"
-    if html_path.exists():
-        return send_from_directory(app.static_folder, f"{path}.html")
 
     return send_from_directory(app.static_folder, "404.html")
 
