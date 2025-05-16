@@ -5,7 +5,6 @@ import Home from "@/views/Home.vue";
 import AboutUs from "@/views/AboutUs.vue";
 import AccountOverview from "@/views/AccountOverview.vue";
 
-
 const routes = [
   { path: "/", component: Home },
   { path: "/sign-up", component: SignUp },
